@@ -2,7 +2,6 @@ package dao;
 
 import db.JdbcUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
@@ -10,8 +9,6 @@ import org.apache.commons.dbutils.handlers.ScalarHandler;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -23,26 +20,26 @@ import java.util.List;
  */
 public class DAO<T> {
 
-
     private QueryRunner queryRunner = new QueryRunner();
 
     private Class<T> clazz;
 
     public DAO(){
-        //在构造器中获取clazz
-        Class thisClass = this.getClass();
-
-        //thisClass:CustomerDAOImpl
-        System.out.println("thisClass:"+thisClass);
-
-        //thisClass:CustomerDAOImpl
-        System.out.println("getClass:"+getClass());
+//        //在构造器中获取clazz
+//
+//        Class thisClass = this.getClass();
+//
+//        //thisClass:CustomerDAOImpl
+//        System.out.println("thisClass:"+thisClass);
+//
+//        //thisClass:CustomerDAOImpl
+//        System.out.println("getClass:"+getClass());
 
         //获取带泛型参数的父类类型
         Type superClass =  getClass().getGenericSuperclass();
 
-        //DAO<T>
-        System.out.println(superClass);
+//        //DAO<T>
+//        System.out.println(superClass);
 
         //判断是否实现参数类型接口
         if (superClass instanceof ParameterizedType){
@@ -109,7 +106,9 @@ public class DAO<T> {
         Connection connection = null;
         try {
             connection = JdbcUtils.getConnection();
-            return queryRunner.query(sql, new BeanHandler<>(clazz),args);
+            System.out.println(clazz);
+            return queryRunner.query(connection,sql,new BeanHandler<>(clazz),args);
+
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -129,7 +128,7 @@ public class DAO<T> {
         Connection connection = null;
         try {
             connection = JdbcUtils.getConnection();
-            return queryRunner.query(sql, new BeanListHandler<>(clazz),args);
+            return queryRunner.query(connection,sql, new BeanListHandler<>(clazz),args);
         }catch (Exception e){
             e.printStackTrace();
         }finally {

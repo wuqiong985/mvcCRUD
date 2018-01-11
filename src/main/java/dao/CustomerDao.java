@@ -1,5 +1,6 @@
 package dao;
 
+import domain.CriteriaCustomer;
 import domain.Customer;
 
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.List;
  * Created by wuqiong6 on 2018/1/9.
  */
 public interface CustomerDao {
+
+    public List<Customer> getForListWithCritieriaCustomer(CriteriaCustomer cc);
 
     public List<Customer> getAll();
 
