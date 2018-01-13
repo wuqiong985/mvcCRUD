@@ -5,7 +5,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.xs.AbstractDateTimeDV;
 /**
  * Created by wuqiong6 on 2018/1/11.
  *
- * 用于模糊查询的封装对象
+ * 用于模糊查询对象的封装
  *
  * 因为查询条件很多时候和domain类并不相同，所以要做成一个单独的类
  *

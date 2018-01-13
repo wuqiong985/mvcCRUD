@@ -1,6 +1,7 @@
 package impl;
 
 import dao.CustomerDao;
+import domain.CriteriaCustomer;
 import domain.Customer;
 import org.junit.Test;
 
@@ -30,6 +31,7 @@ public class CustomerDAOJdbcImplTest {
        customerDao.save(customer);
     }
 
+
     @Test
     public void get() throws Exception {
         Customer customer = customerDao.get(2);
@@ -50,4 +52,10 @@ public class CustomerDAOJdbcImplTest {
         System.out.println(count);
     }
 
+    @Test
+    public void getForListWithCriteriaCustomer() throws Exception{
+
+        CriteriaCustomer ca = new CriteriaCustomer("ke","","");
+        System.out.println(customerDao.getForListWithCriteriaCustomer(ca));
+    }
 }

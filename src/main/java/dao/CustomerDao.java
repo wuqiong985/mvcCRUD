@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface CustomerDao {
 
-    public List<Customer> getForListWithCritieriaCustomer(CriteriaCustomer cc);
+    public List<Customer> getForListWithCriteriaCustomer(CriteriaCustomer cc);
 
     public List<Customer> getAll();
 

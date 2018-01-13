@@ -12,6 +12,22 @@
   <head>
     <title>$Title$</title>
   </head>
+
+  <script type="text/javascript" src="scripts/jquery-1.6.4.js"></script>
+
+  <script>
+    <%-- 弹出对话框 --%>
+    $(function () {
+        $(".delete").click(function () {
+//            获取要删除的人的姓名
+            var content = $(this).parent().parent().find("td:eq(1)").text();
+            var flag = confirm("确定要删除"+content+"的信息吗");
+
+            return flag;
+        })
+    })
+  </script>
+
   <body>
     <form action="query.do" method="post">
       <table >
@@ -28,7 +44,7 @@
           <td><input type="text" name="phone"></td>
         </tr>
         <tr>
-          <td><input type="submit" value="Query"></td>
+          <td><input type="submit" value="Query" ></td>
           <td> <a href="" >Add new customer</a> </td>
         </tr>
       </table>
@@ -59,8 +75,8 @@
             <td><%=customer.getName()%></td>
             <td><%=customer.getAddress()%></td>
             <td><%=customer.getPhone()%></td>
-            <td><a href="delete.do?id=<%=customer.getId()%>"> Update </a></td>
-            <td><a href=""> Delete</a></td>
+            <td><a href=""> Update </a></td>
+            <td><a href="delete.do?id=<%=customer.getId()%>" class="delete"> Delete</a></td>
           </tr>
           <%
             }

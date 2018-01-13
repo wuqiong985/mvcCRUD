@@ -14,7 +14,7 @@ public class CustomerDAOJdbcImpl  extends DAO<Customer> implements CustomerDao {
 
     //模糊查询
     @Override
-    public List<Customer> getForListWithCritieriaCustomer(CriteriaCustomer cc) {
+    public List<Customer> getForListWithCriteriaCustomer(CriteriaCustomer cc) {
         String sql = "select id,name,address,phone from customers where name like ? and address like ? and phone like ?";
         //此时的get方法已经被处理过，详情见CriteriaCustomer的get方法
         return getForList(sql,cc.getName(), cc.getAddress(), cc.getPhone());
@@ -34,7 +34,7 @@ public class CustomerDAOJdbcImpl  extends DAO<Customer> implements CustomerDao {
 
     public Customer get(Integer id) {
         String sql = "select id,name,address,phone from customers where id = ?";
-        return get(sql,id);
+        return super.get(sql,id);
     }
 
 

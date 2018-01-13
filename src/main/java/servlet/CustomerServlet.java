@@ -1,6 +1,7 @@
 package servlet;
 
 import dao.CustomerDao;
+import domain.CriteriaCustomer;
 import domain.Customer;
 import impl.CustomerDAOJdbcImpl;
 
@@ -32,6 +33,12 @@ public class CustomerServlet extends HttpServlet {
 
     private CustomerDao customerDao = new CustomerDAOJdbcImpl();
 
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String servletPath = req.getServletPath();
@@ -39,9 +46,12 @@ public class CustomerServlet extends HttpServlet {
         //返回请求的servlet名，也就是方法.do
         System.out.println(servletPath);
 
+        String tempPath = servletPath.substring(1);
         //截取方法名
-        String methodName = servletPath.substring(1).substring(0,servletPath.length()-4);
+        String methodName = tempPath.substring(0,servletPath.indexOf(".")-1);
+
         System.out.println(methodName);
+
 
         //执行方法
         try {
@@ -52,17 +62,41 @@ public class CustomerServlet extends HttpServlet {
         }
     }
 
-    private void delete(HttpServletRequest req, HttpServletResponse resp) {
+    private void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
         System.out.println("delete");
+
+        int id = 0;
+
+        //防止id不能转为int，如不能转，ID = 0
+        try{
+            id = Integer.parseInt(req.getParameter("id"));
+            customerDao.delete(id);
+        } catch (Exception e){
+
+        }
+
+        resp.sendRedirect("query.do");
     }
 
     private void query(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //1.获取所有customers
-        List<Customer> customers = customerDao.getAll();
+
+        System.out.println("query");
+        String name = req.getParameter("name");
+        String address = req.getParameter("address");
+        String phone = req.getParameter("phone");
+
+        CriteriaCustomer cc = new CriteriaCustomer(name,address,phone);
+
+//        //1.获取所有customers
+//        List<Customer> customers = customerDao.getAll();
+
+        List<Customer> customers = customerDao.getForListWithCriteriaCustomer(cc);
 
         //2.添加customers到attribute
         req.setAttribute("customers",customers);
 
+        //3.转发
         req.getRequestDispatcher("/index.jsp").forward(req,resp);
 
         System.out.println("query");
@@ -77,8 +111,4 @@ public class CustomerServlet extends HttpServlet {
     }
 
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }

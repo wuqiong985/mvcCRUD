@@ -10,5 +10,6 @@ create table `customers` (
 	`name` varchar (90),
 	`address` varchar (90),
 	`phone` varchar (90)
-); 
+);
+ALTER TABLE customers ADD CONSTRAINT name_uk UNIQUE(NAME);
 insert into `customers` (`id`, `name`, `address`, `phone`) values('2','Jerry','Shanghai','13182467741');
