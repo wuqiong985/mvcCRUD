@@ -22,3 +22,5 @@
 hs_err_pid*
 test/
 out/artifacts/mvcCRUD_war_exploded/WEB-INF/classes/c3p0-config.xml
+.idea/workspace.xml
+src/main/resources/c3p0-config.xml
