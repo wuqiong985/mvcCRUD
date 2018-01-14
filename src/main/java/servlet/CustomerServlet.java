@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -49,9 +50,7 @@ public class CustomerServlet extends HttpServlet {
         String tempPath = servletPath.substring(1);
         //截取方法名
         String methodName = tempPath.substring(0,servletPath.indexOf(".")-1);
-
         System.out.println(methodName);
-
 
         //执行方法
         try {
@@ -65,7 +64,6 @@ public class CustomerServlet extends HttpServlet {
     private void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         System.out.println("delete");
-
         int id = 0;
 
         //防止id不能转为int，如不能转，ID = 0
@@ -102,13 +100,94 @@ public class CustomerServlet extends HttpServlet {
         System.out.println("query");
     }
 
-    private void add(HttpServletRequest req, HttpServletResponse resp) {
+    private void addCustomer(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        //1.获取表单参数
+        String name = req.getParameter("name");
+        String address = req.getParameter("address");
+        String phone = req.getParameter("phone");
+
+        //2:检验名字是否已经使用
+        long count = customerDao.getCountWithName(name);
+
+        //2.1若返回值大于0，则转发响应newcustomer.jsp页面，
+        //   在页面上显示：用户名name已经存在，请换一个！
+        if (count > 0) {
+            //2.1.1:在request中放入一个属性message：用户名已经存在，请换一个！
+            //      在页面上通过request.getAttribue("message")的方法来显示
+            req.setAttribute("message", "用户名" + name + "已经存在，请换一个！");
+
+            //2.1.2：表单数据可以回显，即原来输入的东西还是可以显示
+            //      value="<%=request.getParameter("name") == null ? "":request.getParameter("name")%>"
+
+            req.getRequestDispatcher("/newcustomer.jsp").forward(req,resp);
+            //2.1.3:结束方法：return
+            return;
+        }
+
+        //3.若验证通过：封装要添加的customer对象并保存
+        Customer customer = new Customer(name,address,phone);
+        customerDao.save(customer);
+
+        //4.重定向到success.jsp页面,使用重定向可以避免出现表单重复提交的问题
+        resp.sendRedirect("success.jsp");
+
         System.out.println("add");
+
     }
 
-    private void edit(HttpServletRequest req,HttpServletResponse resp){
+    private void edit(HttpServletRequest req,HttpServletResponse resp) throws ServletException, IOException {
+        //1.获取请求参数
+        int id = Integer.parseInt(req.getParameter("id"));
+
+        Customer customer = customerDao.get(id);
+
+        req.setAttribute("customer",customer);
+        req.getRequestDispatcher("/updatecustomer.jsp").forward(req,resp);
+
+        System.out.println(id);
+
         System.out.println("Edit function");
     }
 
+    private void update(HttpServletRequest req,HttpServletResponse resp) throws IOException {
+        //1.获取表单参数:id,name,address,phone,oldName
+        int id = Integer.parseInt(req.getParameter("id"));
+
+        //2.检验name是否已经被占用
+
+        //2.1比较name和oldName是否相同，若相同则说明name可以用
+
+        //2.2若不相同，则调用CustomerDao的getCountWithName(String name) 获取name在数据库中是否存在
+
+        //3.若返回值大于0，则响应updatecustomer.jsp，转发响应
+
+        //3.1:在updatecustomer.jsp中放入一个属性message：用户名已经存在，请换一个！
+        //      在页面上通过request.getAttribue("message")的方法来显示
+
+        //3.1.2：表单数据可以回显，即原来输入的东西还是可以显示
+        //      address,phone 显示表单提交的新的值，name显示oldName ，而不是新提交的name
+
+        //3.1.3:结束方法：return
+
+        //3.若验证通过：封装要添加的customer对象并保存
+
+
+        //4.重定向到success.jsp页面,使用重定向可以避免出现表单重复提交的问题
+
+
+
+
+        Customer customer = customerDao.get(id);
+
+        customer.setName(req.getParameter("name"));
+        customer.setAddress(req.getParameter("address"));
+        customer.setPhone(req.getParameter("phone"));
+
+        customerDao.save(customer);
+
+        resp.sendRedirect("index.jsp");
+
+        System.out.println("update successfully!");
+    }
 
 }

@@ -45,7 +45,7 @@
         </tr>
         <tr>
           <td><input type="submit" value="Query" ></td>
-          <td> <a href="" >Add new customer</a> </td>
+          <td> <a href="newcustomer.jsp" >Add new customer</a> </td>
         </tr>
       </table>
     </form>
@@ -75,7 +75,7 @@
             <td><%=customer.getName()%></td>
             <td><%=customer.getAddress()%></td>
             <td><%=customer.getPhone()%></td>
-            <td><a href=""> Update </a></td>
+            <td><a href="edit.do?id=<%=customer.getId()%>"> Update </a></td>
             <td><a href="delete.do?id=<%=customer.getId()%>" class="delete"> Delete</a></td>
           </tr>
           <%
