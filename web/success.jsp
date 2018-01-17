@@ -12,5 +12,6 @@
 </head>
 <body>
     信息添加成功！
+    <a href="query.do">return</a>
 </body>
 </html>

@@ -169,7 +169,7 @@ public class CustomerServlet extends HttpServlet {
 
         //2.检验name是否已经被占用
         //2.1比较name和oldName是否相同，若相同则说明name可以用
-        if (!oldName.equals(name)){
+        if (!oldName.equalsIgnoreCase(name)){
             //2.2若不相同，则调用CustomerDao的getCountWithName(String name) 获取name在数据库中是否存在
             long count = customerDao.getCountWithName(name);
 
@@ -188,16 +188,16 @@ public class CustomerServlet extends HttpServlet {
                 //3.1.3:结束方法：return
                 return;
             }
-        } else {
-            //4.若验证通过：封装要添加的customer对象并保存
-            Customer customer = new Customer(name,address,phone);
-            customer.setId(id);
-
-            customerDao.update(customer);
-
-            //5.重定向到success.jsp页面,使用重定向可以避免出现表单重复提交的问题
-            resp.sendRedirect("query.do");
         }
+
+        //4.若验证通过：封装要添加的customer对象并保存
+        Customer customer = new Customer(name,address,phone);
+        customer.setId(id);
+
+        customerDao.update(customer);
+
+        //5.重定向到success.jsp页面,使用重定向可以避免出现表单重复提交的问题
+        resp.sendRedirect("query.do");
 
     }
 
