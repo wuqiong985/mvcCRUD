@@ -136,58 +136,69 @@ public class CustomerServlet extends HttpServlet {
     }
 
     private void edit(HttpServletRequest req,HttpServletResponse resp) throws ServletException, IOException {
+        String forwardPath = "Error.jsp";
+
         //1.获取请求参数
-        int id = Integer.parseInt(req.getParameter("id"));
+        String idStr = req.getParameter("id");
 
-        Customer customer = customerDao.get(id);
+        try {
+            Customer customer = customerDao.get(Integer.parseInt(idStr));
+            if (customer != null){
+                forwardPath = "/updatecustomer.jsp";
+                //2.存入customer属性
+                req.setAttribute("customer",customer);
+            }
+        } catch (NumberFormatException e){
+        }
+        //3.响应
+        req.getRequestDispatcher(forwardPath).forward(req,resp);
 
-        req.setAttribute("customer",customer);
-        req.getRequestDispatcher("/updatecustomer.jsp").forward(req,resp);
-
-        System.out.println(id);
 
         System.out.println("Edit function");
     }
 
-    private void update(HttpServletRequest req,HttpServletResponse resp) throws IOException {
+    private void update(HttpServletRequest req,HttpServletResponse resp) throws IOException, ServletException {
         //1.获取表单参数:id,name,address,phone,oldName
         int id = Integer.parseInt(req.getParameter("id"));
+        String oldName = req.getParameter("oldName");
+        String address = req.getParameter("address");
+        String phone = req.getParameter("phone");
+        String name = req.getParameter("name");
+
+        System.out.println(oldName+address+phone+name);
 
         //2.检验name是否已经被占用
-
         //2.1比较name和oldName是否相同，若相同则说明name可以用
+        if (!oldName.equals(name)){
+            //2.2若不相同，则调用CustomerDao的getCountWithName(String name) 获取name在数据库中是否存在
+            long count = customerDao.getCountWithName(name);
 
-        //2.2若不相同，则调用CustomerDao的getCountWithName(String name) 获取name在数据库中是否存在
+            //3.若返回值大于0，则响应updatecustomer.jsp，转发响应
+            if (count > 0){
 
-        //3.若返回值大于0，则响应updatecustomer.jsp，转发响应
+                //3.1:在updatecustomer.jsp中放入一个属性message：用户名已经存在，请换一个！
+                //      在页面上通过request.getAttribue("message")的方法来显示
+                req.setAttribute("message","用户名"+name+"已经存在，请重新选择！");
 
-        //3.1:在updatecustomer.jsp中放入一个属性message：用户名已经存在，请换一个！
-        //      在页面上通过request.getAttribue("message")的方法来显示
+                //3.1.2：表单数据可以回显，即原来输入的东西还是可以显示
+                //      address,phone 显示表单提交的新的值，name显示oldName ，而不是新提交的name
 
-        //3.1.2：表单数据可以回显，即原来输入的东西还是可以显示
-        //      address,phone 显示表单提交的新的值，name显示oldName ，而不是新提交的name
+                req.getRequestDispatcher("/updatecustomer.jsp").forward(req,resp);
 
-        //3.1.3:结束方法：return
+                //3.1.3:结束方法：return
+                return;
+            }
+        } else {
+            //4.若验证通过：封装要添加的customer对象并保存
+            Customer customer = new Customer(name,address,phone);
+            customer.setId(id);
 
-        //3.若验证通过：封装要添加的customer对象并保存
+            customerDao.update(customer);
 
+            //5.重定向到success.jsp页面,使用重定向可以避免出现表单重复提交的问题
+            resp.sendRedirect("query.do");
+        }
 
-        //4.重定向到success.jsp页面,使用重定向可以避免出现表单重复提交的问题
-
-
-
-
-        Customer customer = customerDao.get(id);
-
-        customer.setName(req.getParameter("name"));
-        customer.setAddress(req.getParameter("address"));
-        customer.setPhone(req.getParameter("phone"));
-
-        customerDao.save(customer);
-
-        resp.sendRedirect("index.jsp");
-
-        System.out.println("update successfully!");
     }
 
 }
