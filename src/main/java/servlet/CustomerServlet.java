@@ -1,9 +1,11 @@
 package servlet;
 
 import dao.CustomerDao;
+import dao.factory.CustomerDaoFactory;
 import domain.CriteriaCustomer;
 import domain.Customer;
 import impl.CustomerDAOJdbcImpl;
+import impl.CustomerDAOXMLImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -32,8 +33,11 @@ public class CustomerServlet extends HttpServlet {
 //        }
 //    }
 
-    private CustomerDao customerDao = new CustomerDAOJdbcImpl();
+//    private CustomerDao customerDao = new CustomerDAOJdbcImpl();
 
+    //通过工厂类获取CustomerDAO实现类
+    private CustomerDao customerDao = CustomerDaoFactory.getInstance().getCustomerDao();
+//    private CustomerDao customerDao = new CustomerDAOXMLImpl();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
