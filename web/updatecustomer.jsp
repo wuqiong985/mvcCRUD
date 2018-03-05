@@ -67,7 +67,7 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2"><input type="submit" value="Sumbit"></td>
+            <td colspan="2"><input type="submit" value="Submit"></td>
         </tr>
         </table>
     </form>
